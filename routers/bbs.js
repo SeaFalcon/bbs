@@ -5,19 +5,26 @@ module.exports = router;
 const db = require('../db');
 
 router.use((req, res, next) => {
-  var board = res.locals.boards.find(board => board.name == req.query.board);
+  let board = res.locals.boards.find(board => board.name == req.query.board);
   if(!board) board = res.locals.boards[0];
   res.locals.board = board;
   next();
 });
 
-router.get('/', (req, res) => {
+/*router.get('/', (req, res) => {
   db.query('select a.*, b.name board_name, b.title board_title from articles a left join boards b on a.board_id=b.id', (err, articles) => {
     if(err) throw new Error(err);
     db.query('select * from boards', (err, boards) => {
       if(err) throw new Error(err);
       res.render('board', {articles: articles, boards: boards});
     });
+  });
+});*/
+
+router.get('/', (req, res) => {
+  db.query('select * from articles', (err, articles) => {
+      if(err) throw new Error(err);
+      res.render('board', {articles: articles});
   });
 });
 
@@ -38,9 +45,9 @@ router.get('/write', (req, res) => {
   });
 });
 router.post('/write', (req, res) => {
-  var values = req.body;
+  let values = req.body;
   console.log(values);
-  var errors = [];
+  let errors = [];
   
   if(!values.boardName || values.boardName.trim().length == 0)
     errors.push({field: 'boardName', code:'NOT_SELECTED', msg: '카테고리 선택해!!'}); 
@@ -68,7 +75,7 @@ router.post('/write', (req, res) => {
 
 // update
 router.get('/update/:article', (req, res) => {
-  var article = JSON.parse(req.params.article);
+  let article = JSON.parse(req.params.article);
   if(!req.session.user) return res.redirect('/user/login');
   db.query('select * from boards', (err, boards) => {
     if(err) throw new Error(err);
@@ -77,8 +84,8 @@ router.get('/update/:article', (req, res) => {
 });
 router.post('/update', (req, res) => {
   if(!req.session.user) return res.redirect('/user/login');
-  var values = req.body;
-  var errors = [];
+  let values = req.body;
+  let errors = [];
   
   if(!values.boardName || values.boardName.trim().length == 0)
     errors.push({field: 'boardName', code:'NOT_SELECTED', msg: '카테고리 선택해!!'});
@@ -93,6 +100,7 @@ router.post('/update', (req, res) => {
     db.query('select * from boards', (err, rows) => {
       if(err) throw new Error(err);
       res.render('article/write', {values, errors, boards: rows});
+      return;
     });
   }
   

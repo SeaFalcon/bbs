@@ -1,7 +1,7 @@
 <%
   helper = {
     makeForm: function(name, method, action, fields){
-      var data = forms[name] || {};
+      let data = forms[name] || {};
       if(!data.values) data.values = {};
       if(!data.errors) data.errors = [];
       //console.log(data);
@@ -9,7 +9,7 @@
     <form name="<%=name%>" action="<%=action || ''%>" method="<%=method || 'POST'%>">
       <% 
         fields.forEach(function(field){ 
-        var fieldErrors = data.errors.filter(err => err.field == field.name);
+        let fieldErrors = data.errors.filter(err => err.field == field.name);
       %>
         <% if(field.type == 'radio') { %>
           <input type="<%=field.type%>" name="<%=field.name%>" value="<%=field.value%>" <%if(field.value==data.values[field.name]){%>checked<%}%> ><%=field.title%><br>

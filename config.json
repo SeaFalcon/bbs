@@ -2,8 +2,8 @@
   "secret": "dongwookbbs",
   "mysql" : {
     "user": "root",
-    "password": "",
-    "host": "",
+    "password": "1111",
+    "host": "localhost",
     "database": "bbs"
   }
 }

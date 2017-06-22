@@ -9,19 +9,18 @@
     <main>
       <aside>
         <nav>
-          <% boards.forEach(board => { %>
-            <a href="/?board=<%=board.name%>"><%=board.title%></a>
+          <% boards.forEach(b => { %>
+            <a href="/?board=<%=b.name%>" class="<%= board.name==b.name && path=='/' ? 'active' : 'inactive'%>"><%=b.title%></a>
           <% }) %>
           <% if(user) { %>
             <h2><%=user.name%>님 안녕하세요?</h2>
             <a href="/write">글쓰기</a>
             <a href="#" onclick="bbs.User.logout(); return false;">로그아웃</a>
           <% } else { %>
+            <a href="/user/login" class="<%=path == '/user/login' ? 'active' : 'inactive'%>">로그인</a>
+            <a href="/user/join" class="<%=path == '/user/join' ? 'active' : 'inactive'%>">회원가입</a>
             <h2>로그인하세요</h2>
-            <a href="/user/login"><button type="button" class="<%=path == '/user/login' ? 'active' : ''%>">로그인</button></a>
-            <a href="/user/join"><button type="button">회원가입</button></a>
           <% } %>
-        </nav>
       </aside>
     </main>
 <hr>
