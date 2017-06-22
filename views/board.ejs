@@ -1,13 +1,53 @@
 <% include header %>
-<select data-app="select">
+<!-- <select data-app="select">
   <% boards.forEach(board => { %>
-    <option value="<%=board.name%>"><%=board.title%></option>
+    <option value="<%=board.id%>"><%=board.title%></option>
   <% }) %>
 </select>
-<ul data-app="ul"></ul>
+<ul data-app="ul"></ul> -->
+
+<div class="board">
+  <%  if (articles.length == 0) { %>
+  <p>게시물이 없습니다.</p>
+  <% } else { %>
+    <div class="header">
+      <div class="row">
+        <div class="id">#</div>
+        <div class="title">제목</div>
+        <div class="author">글쓴이</div>
+        <div class="hit">조회수</div>
+        <div class="date">날짜</div>
+      </div>
+    </div>
+    <div class="body">
+      <% articles.forEach(article => { %>
+      <div class="row">
+        <div class="id center"><%=article.id%></div>
+        <div class="title"><a href="/article/<%=article.id%>"><%=article.title%></a></div>
+        <div class="author center"><%=article.name%></div>
+        <div class="hit center"><%=article.hit%></div>
+        <div class="date center"><%=util.date(article.createdAt)%></div>
+      </div>
+      <% }); %>
+    </div>
+    <div class="footer">
+      <div class="paging">
+        <%=console.log(paging)%>
+        <% if(paging.first) { %> <a href="<%=query({page: paging.first})%>" class="first">처음</a> <% } %>
+        <% if(paging.prev) { %> <a href="" class="prev">이전</a> <% } %>
+          <% for(let i=paging.start; i<=paging.end; i++){ %>
+            <a class="<%=(i==paging.current) ? 'current' : ''%>" href=""><%=i%></a>
+          <% } %>
+        <% if(paging.next) { %> <a href="" class="next">다음</a> <% } %>
+        <% if(paging.last) { %> <a href="" class="last">마지막</a> <% } %>
+      </div>
+    </div>
+  <% } %>
+</div>
+
 
 <script>
-  let $views = {}
+ /* let $views = {}
   $('[data-app]').each((idx, element) => {
     let $el = $(element);
     let viewName = $el.data('app');
@@ -22,11 +62,11 @@
   let handlers = {
     'init': function(e){
       state.items = <%-JSON.stringify(articles)%>;
-      state.filteredItems = state.items.filter(item => item.board_name==$views.select.val());
+      state.filteredItems = state.items.filter(item => item.board_id==$views.select.val());
       triggerEvent('update-view');
     },
     'select-change': function(e, boardName){
-      state.filteredItems = state.items.filter(item => item.board_name==boardName);
+      state.filteredItems = state.items.filter(item => item.board_id==boardName);
       triggerEvent('update-view');
     },
     'update-view': function(e){
@@ -52,7 +92,7 @@
   
   function triggerEvent(name, data=null){
     $(window).trigger(`app-${name}`, data);
-  }
+  }*/
   
 </script>
 <% include footer %>

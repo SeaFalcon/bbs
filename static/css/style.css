@@ -20,10 +20,6 @@ aside nav a.active {
   color: red;
   font-weight:bold;
 }
-aside nav a.inactive {
-  color: blue;
-  font-weight:bold;
-}
 input {
   border: 1px solid black;
   padding: 5px 3px;
@@ -41,4 +37,53 @@ main > section {
   padding: 30px 20px;
   margin: 10px 0 0 0;
   border: 1px solid black;
+}
+
+.board {}
+.board .row {
+  border-bottom: 1px solid gray;
+  padding: 5px;
+}
+.board .row::after {
+  content: "";
+  clear:both;
+  display:block;
+}
+.board .row > div {
+  float:left;
+  padding: 5px;
+  //overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.board .header .row > div {
+  text-align: center;
+  font-weight: bold;
+}
+.board .row > div.center {
+  text-align: center;
+}
+.board .row > .id {
+  width: 70px;
+}
+.board .row > .author {
+  width: 100px;
+}
+.board .row > .hit {
+  width: 100px;
+}
+.board .row > .title {
+  width: calc(100% - 500px);
+}
+.board .row > .date {
+  width: 100px;
+}
+h2.username{
+  text-align: center;
+}
+
+.board .paging {
+  margin: 10px; auto;
+  text-align: center;
+  text-decoration: none;
 }
