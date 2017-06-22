@@ -1,0 +1,15 @@
+<% include ../header %>
+
+제목: <%=article.title%><br>
+내용: <%=article.content%><br>
+글쓴이: <%=article.userName%><br>
+글쓴날짜: <%=article.createdAt%><br>
+
+<a href="/">글 목록</a>
+
+<% if(user && (user.isAdmin==1 || user.id == article.user_id) ) { %>
+  <a href="/update/<%=JSON.stringify(article)%>">글 수정</a>
+  <a href="#" onclick="bbs.Article.delete(<%=article.id%>); return false;">글 삭제</a>
+<% } %>
+
+<% include ../footer %>

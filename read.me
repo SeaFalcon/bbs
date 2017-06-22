@@ -1,0 +1,41 @@
+<% include helper %>
+
+## 접속주소
+dns : https://benzenbbs-seafalcon.c9users.io
+
+
+## mysql 시동
+db : mysql-ctl start / stop / cli
+
+
+## utf8로 변경하는 법
+sudo find / -name '*.cnf'
+cd /etc/mysql/
+sudo vi my.cnf
+vi 명령어 - https://opentutorials.org/course/730/4561
+          - 아래 내용으로 수정 후 esc 누르고 :w 저장, :q 종료, :q! 강제종료
+
+
+    [client]
+    ...
+    default-character-set = utf8
+    
+    [mysqld]
+    ...
+    init_connect="SET collation_connection = utf8_general_ci"  
+    init_connect="SET NAMES utf8"  
+    #default-character-set = utf8   mysql 5.5 버전부터는 이 옵션이 deprecated 되었습니다. 5.4 이하의 버전에서만 사용하세요.
+    character-set-server = utf8  
+    collation-server = utf8_general_ci  
+    
+    [mysqldump]
+    ...
+    default-character-set = utf8
+    
+    [mysql]
+    ...
+    default-character-set = utf8
+
+
+mysql 접속 후
+show variables like 'C%';

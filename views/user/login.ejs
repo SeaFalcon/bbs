@@ -1,0 +1,14 @@
+<% include ../header %>
+
+<h1>user/login.ejs</h1>
+
+<%
+  var formFields = [
+    {name: 'uid', type: 'text', placeholder: 'id'},
+    {name: 'pw', type: 'password', placeholder: 'password'},
+  ];
+%>
+
+<%=helper.makeForm('login', 'post', '/user/login', formFields)%>
+
+<% include ../footer %>

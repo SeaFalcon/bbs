@@ -1,0 +1,39 @@
+<%
+  helper = {
+    makeForm: function(name, method, action, fields){
+      var data = forms[name] || {};
+      if(!data.values) data.values = {};
+      if(!data.errors) data.errors = [];
+      //console.log(data);
+%>
+    <form name="<%=name%>" action="<%=action || ''%>" method="<%=method || 'POST'%>">
+      <% 
+        fields.forEach(function(field){ 
+        var fieldErrors = data.errors.filter(err => err.field == field.name);
+      %>
+        <% if(field.type == 'radio') { %>
+          <input type="<%=field.type%>" name="<%=field.name%>" value="<%=field.value%>" <%if(field.value==data.values[field.name]){%>checked<%}%> ><%=field.title%><br>
+        <% } else if(field.type == 'textarea') { %>
+          <%=field.name%>: <textarea name="<%=field.name%>" placeholder="<%=field.placeholder%>" value="<%=data.values[field.name]%>" class="<%=fieldErrors.some(err => err.field == field.name) ? 'error' : '' %>" rows="<%=field.rows%>" cols="<%=field.cols%>"></textarea><br>
+        <% } else { %>
+          <%=field.name%>: <input type="<%=field.type%>" name="<%=field.name%>" placeholder="<%=field.placeholder%>" value="<%=data.values[field.name]%>" class="<%=fieldErrors.some(err => err.field == field.name) ? 'error' : '' %>"><br>
+        <% } %>
+        <% fieldErrors.forEach(err => { %>
+          <p class="error"><%=err.msg%></p> 
+        <% }); %>
+      <% }); %>
+      <% data.errors.filter(error => !error.field).forEach(err => { %>
+        <p class="error"><%=err.msg%></p>
+      <% }); %>
+      <input type="submit"></input>
+      <a href="/"><button type="button">목록가기</button></a>
+    </form>
+<%
+    }
+  };
+%>
+
+<!--
+  let x = {a:1, b:2, c:3};
+  let {a, b, c} = x;
+-->

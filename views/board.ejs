@@ -1,0 +1,58 @@
+<% include header %>
+<select data-app="select">
+  <% boards.forEach(board => { %>
+    <option value="<%=board.name%>"><%=board.title%></option>
+  <% }) %>
+</select>
+<ul data-app="ul"></ul>
+
+<script>
+  let $views = {}
+  $('[data-app]').each((idx, element) => {
+    let $el = $(element);
+    let viewName = $el.data('app');
+    $views[viewName] = $el;
+  });
+  
+  let state = {
+    items: [],
+    filteredItems: []
+  };
+  
+  let handlers = {
+    'init': function(e){
+      state.items = <%-JSON.stringify(articles)%>;
+      state.filteredItems = state.items.filter(item => item.board_name==$views.select.val());
+      triggerEvent('update-view');
+    },
+    'select-change': function(e, boardName){
+      state.filteredItems = state.items.filter(item => item.board_name==boardName);
+      triggerEvent('update-view');
+    },
+    'update-view': function(e){
+      $views.ul.empty();
+      state.filteredItems.forEach(article => {
+        $views.ul.append($(`<li><a href="article/${article.id}">${article.title}</a></li>`));
+      });
+    }
+  };
+  
+  // register handler
+  Object.keys(handlers).forEach(name => {
+    let eventName = `app-${name}`;
+    $(window).on(eventName, handlers[name]);
+  });
+  
+  // 이벤트 연결한 이후에 작동 가능
+  triggerEvent('init');
+  
+  $views['select'].on('change', function(e){
+    triggerEvent('select-change', e.target.value);
+  });
+  
+  function triggerEvent(name, data=null){
+    $(window).trigger(`app-${name}`, data);
+  }
+  
+</script>
+<% include footer %>

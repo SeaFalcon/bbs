@@ -1,0 +1,15 @@
+<% include ../header %>
+
+<%
+  var formFields = [
+    {name: 'uid', type: 'text', placeholder: 'id'},
+    {name: 'pw', type: 'password', placeholder: 'password'},
+    {name: 'pwConfirm', type: 'password', placeholder: 'password confirm'},
+    {name: 'name', type: 'text', placeholder: 'name'},
+  ];
+%>
+<%= helper.makeForm('join', 'post', '/user/join', formFields) %>
+
+<% include ../footer %>
+
+<!-- form 자체를 생성해주는 helper function -->

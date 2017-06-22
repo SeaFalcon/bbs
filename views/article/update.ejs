@@ -1,0 +1,17 @@
+<% include ../header %>
+
+<h1>article/update.ejs</h1>
+<form action="/update" method="post">
+  <% boards.forEach(board => { %>
+    <input type="radio" name="boardName" value="<%=board.id%>" <%if(board.id==article.board_id){%>checked<%}%> ><%=board.title%></input>
+  <% }) %>
+  <br><br>
+  <input type="hidden" name="id" value="<%=article.id%>"></input>
+  <input type="text" name="title" placeholder="제목" size="98" value="<%=article.title%>"></input><br><br>
+  <textarea rows="10" cols="100" name="content" placeholder="내용"><%=article.content%></textarea>
+  <br><br>
+  <input type="submit">
+  <a href="/"><button type="button">목록가기</button></a>
+</form>
+
+<% include ../footer %>

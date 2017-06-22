@@ -1,0 +1,16 @@
+<% include ../header %>
+
+<%
+  var formFields = [
+    {name: 'title', type: 'text', placeholder: '제목'},
+    {name: 'content', type: 'textarea', placeholder: '내용', cols: 30, rows:4},
+  ];
+  boards.forEach(board => {
+    formFields.unshift({name: 'boardName', type: 'radio', value: board.id, title: board.title});
+  });
+%>
+
+<h1>article/write.ejs</h1>
+<%=helper.makeForm('write', 'post', '/write', formFields)%>
+
+<% include ../footer %>
