@@ -7,6 +7,26 @@
 <ul data-app="ul"></ul> -->
 
 <div class="board">
+  <% if (article) { %>
+    <div class="article">
+      <div class="header">
+        <div class="title"><%=article.title%></div>
+        <span class="author"><%=article.author%> </span>
+        <span class="date"><%=util.date(article.createdAt)%></span>
+      </div>
+      <div class="body">
+        <div class="content">
+          <%=article.content%>          
+        </div>
+      </div>
+      <div class="footer">
+        <% if(user.isAdmin || user.id == article.user_id) { %>
+          <a href="#" onclick="bbs.Article.update(<%=article.id%>); return false;" class="btn">수정</a>
+          <a href="#" onclick="bbs.Article.delete(); return false;" class="btn">삭제</a>
+        <% } %>
+      </div>
+    </div>
+  <% } %>
   <%  if (articles.length == 0) { %>
   <p>게시물이 없습니다.</p>
   <% } else { %>
@@ -23,7 +43,8 @@
       <% articles.forEach(article => { %>
       <div class="row">
         <div class="id center"><%=article.id%></div>
-        <div class="title"><a href="/article/<%=article.id%>"><%=article.title%></a></div>
+        <div class="title"><a href="<%-buildQuery({id: article.id})%>"><%=article.title%></a></div>
+        <!-- /article/<%=article.id%> -->
         <div class="author center"><%=article.name%></div>
         <div class="hit center"><%=article.hit%></div>
         <div class="date center"><%=util.date(article.createdAt)%></div>
@@ -32,15 +53,22 @@
     </div>
     <div class="footer">
       <div class="paging">
-        <%=console.log(paging)%>
-        <% if(paging.first) { %> <a href="<%=query({page: paging.first})%>" class="first">처음</a> <% } %>
-        <% if(paging.prev) { %> <a href="" class="prev">이전</a> <% } %>
+        <% if(paging.first) { %> <a href="<%=buildQuery({page: paging.first, id: null})%>" class="first">처음</a> <% } %>
+        <% if(paging.prev) { %> <a href="<%=buildQuery({page: paging.prev, id: null})%>" class="prev">이전</a> <% } %>
           <% for(let i=paging.start; i<=paging.end; i++){ %>
-            <a class="<%=(i==paging.current) ? 'current' : ''%>" href=""><%=i%></a>
+            <a class="<%=(i==paging.current) ? 'current' : ''%>" href="<%=buildQuery({page: i, id: null})%>"><%=i%></a>
           <% } %>
-        <% if(paging.next) { %> <a href="" class="next">다음</a> <% } %>
-        <% if(paging.last) { %> <a href="" class="last">마지막</a> <% } %>
+        <% if(paging.next) { %> <a href="<%=buildQuery({page: paging.next, id: null})%>" class="next">다음</a> <% } %>
+        <% if(paging.last) { %> <a href="<%=buildQuery({page: paging.last, id: null})%>" class="last">마지막</a> <% } %>
       </div>
+    </div>
+    <form class="search">
+      <%-buildHiddens({page: null, search: null})%>
+      <input type="text" name="search" placeholder="Search...">
+      <input type="submit">
+    </form>
+    <div class="btns">
+      <a href="/write?board=<%=board.name%>">글쓰기</a>
     </div>
   <% } %>
 </div>

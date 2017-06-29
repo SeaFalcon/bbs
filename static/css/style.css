@@ -20,6 +20,9 @@ aside nav a.active {
   color: red;
   font-weight:bold;
 }
+aside nav a.inactive {
+  color: blue;
+}
 input {
   border: 1px solid black;
   padding: 5px 3px;
@@ -87,3 +90,77 @@ h2.username{
   text-align: center;
   text-decoration: none;
 }
+
+/* articles */
+.board .article {
+  border-bottom:1px solid gray;
+  padding:20px 40px;
+  margin-bottom: 30px;
+}
+/* overflow: hidden => float 해제 */
+.board .article .header {
+  /* overflow:hidden;   */
+  border-bottom: 1px solid gray;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+.board .article .header .title {
+  font-size: 2em;
+  padding-bottom: 0.3em;
+}
+.board .article .header .author {
+  /* float:left; */
+  font-size: 1.2em;
+}
+.board .article .header .date {
+  /* float:left; */
+  font-size: 0.8em;
+  font-style: italic;
+}
+.board .article .body {
+  padding: 30px 0;
+}
+
+/* edit */
+.board .edit form{
+  width: 85%;
+  margin: 0 auto;
+}
+.board .edit textarea, .board .edit input[type=text]{
+  width: 100%;
+  display: block;
+  margin: 0 0 10px 0;
+  border:  1px solid gray;
+  font-size: 1.5em;
+  padding: 8px 4px;
+  text-indent: 4px;
+}
+.board .edit textarea{
+  resize: vertical;
+}
+.board .edit .buttons{
+  text-align: center;
+}
+.board .edit input[type=submit], .board .edit input[type=button]{
+  width: 20%;
+  margin: 0 auto;
+  display: inline-block;
+  font-size: 2em;
+}
+.board .edit input[type=submit]{
+  background-color: red;
+  color: white;
+}
+.board .edit input[type=button]{
+  background-color: white  
+}
+/* 
+  html entity
+    &nbsp;  non breaking space
+    &amp;   &
+    &??:
+    &copy;
+    &#382;
+    &lt;
+    &gt;
+*/
