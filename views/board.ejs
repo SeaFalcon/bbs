@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="footer">
-        <% if(user.isAdmin || user.id == article.user_id) { %>
+        <% if(user != null && (user.isAdmin == 1 || user.id == article.user_id) ) { %>
           <a href="#" onclick="bbs.Article.update(<%=article.id%>); return false;" class="btn">수정</a>
           <a href="#" onclick="bbs.Article.delete(); return false;" class="btn">삭제</a>
         <% } %>

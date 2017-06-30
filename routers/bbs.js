@@ -59,59 +59,58 @@ router.get('/', (req, res) => {
 
       // pagination
       db.query(query2, params2, (err, results) => {
+          if(err) throw err;
+
+          let itemTotal = results[0].count;
+          let pTotal = Math.ceil(itemTotal/nPage); // 페이지 갯수
+          let bTotal = Math.ceil(pTotal/nBlock);   // 블록 갯수
+          let curBlock = Math.ceil(page/nBlock);   // 현재 블록
+          let paging = {
+            current: page,
+            prev: curBlock > 1 ? page-1 : null,
+            next: curBlock < bTotal ? curBlock * nBlock + 1 : null,
+            first: curBlock > 1 ? 1 : null,
+            last: curBlock < bTotal ? pTotal : null,
+            start: (curBlock-1)*nBlock + 1,
+            end: curBlock == bTotal ? pTotal : curBlock*nBlock,
+          };
+          if(paging.first == paging.prev) paging.prev = null;
+          if(paging.last == paging.next) paging.next = null;
+
+          //console.log({page, pTotal, bTotal, curBlock}, paging);
+
+          // article
+          let id = req.query.id;
+          if (id) {
+            db.query('select a.*, u.name author from articles a left join users u on u.id=a.user_id where a.id = ?', [id], (err, articleRows) => {
               if(err) throw err;
 
-              let itemTotal = results[0].count;
-              let pTotal = Math.ceil(itemTotal/nPage); // 페이지 갯수
-              let bTotal = Math.ceil(pTotal/nBlock);   // 블록 갯수
-              let curBlock = Math.ceil(page/nBlock);   // 현재 블록
-              let paging = {
-                current: page,
-                prev: curBlock > 1 ? page-1 : null,
-                next: curBlock < bTotal ? curBlock * nBlock + 1 : null,
-                first: curBlock > 1 ? 1 : null,
-                last: curBlock < bTotal ? pTotal : null,
-                start: (curBlock-1)*nBlock + 1,
-                end: curBlock == bTotal ? pTotal : curBlock*nBlock,
-              };
-              if(paging.first == paging.prev) paging.prev = null;
-              if(paging.last == paging.next) paging.next = null;
-
-              //console.log({page, pTotal, bTotal, curBlock}, paging);
-
-              // article
-              let id = req.query.id;
-              if (id) {
-                db.query('select a.*, u.name author from articles a left join users u on u.id=a.user_id where a.id = ?', [id], (err, articleRows) => {
-                  if(err) throw err;
-
-                  // hit up
-                  let article = articleRows[0] || null;
-                  if(article){
-                    if(!req.session.hits) {
-                      req.session.hits = [];
-                    } 
-                    if(req.session.hits.indexOf(article.id == -1)){
-                      db.query(`UPDATE articles SET hit=hit+1 where id=?`, [id]);
-                      req.session.hits.push(article.id);
-                    }
-                  }
-                  
-
-                  res.render('board', {
-                    articles: articles,
-                    paging,
-                    article: articleRows[0]
-                  });
-                });
-              } else {
-                res.render('board', {
-                  articles: articles,
-                  paging,
-                  article: null
-                });
+              // hit up
+              let article = articleRows[0] || null;
+              if(article){
+                if(!req.session.hits) {
+                  req.session.hits = [];
+                } 
+                if(req.session.hits.indexOf(article.id == -1)){
+                  db.query(`UPDATE articles SET hit=hit+1 where id=?`, [id]);
+                  req.session.hits.push(article.id);
+                }
               }
+              
+              res.render('board', {
+                articles: articles,
+                paging,
+                article: articleRows[0]
+              });
             });
+          } else {
+            res.render('board', {
+              articles: articles,
+              paging,
+              article: null
+            });
+          }
+        });
       // render 꼭 지워줘 두번하면 안됨
       //res.render('board', {articles: articles});
   });
@@ -146,7 +145,10 @@ router.post('/write', (req, res) => {
   let title = (req.body.title || '').trim();
   let content = (req.body.content || '').trim();
 
-  if(!board || !user || !title || !content) return res.status(400).end();
+  if(!board || !user || !title || !content) {
+    console.log('내용이 읎어')
+    return res.status(400).end();
+  }
 
   db.query('insert into articles (board_id, user_id, title, content) values (?, ?, ?, ?)', 
   [board.id, user.id, title, content], (err, result) => {
@@ -203,7 +205,7 @@ router.post('/update', (req, res) => {
   
   let articleId = req.query.id;
   let user = req.session.user;
-  let boardName = req.query.board;
+  let boardName = req.query.board || res.locals.board;
   let board = res.locals.boards.find(b => b.name == boardName);
   let title = (req.body.title || '').trim();
   let content = (req.body.content || '').trim();
@@ -273,3 +275,9 @@ router.post('/delete', (req, res) => {
   }
 
 });
+
+
+// comment
+router.post('/comment', (req, res) => {
+
+})

@@ -27,17 +27,16 @@ module.exports = (req, res, next) => {
   };*/
 
   res.locals.buildQuery = (obj = {}) => {
-  	console.log(obj);
- 		let newQuery = {};
- 		let query = req.query;
- 		for(let key in query) newQuery[key] = query[key];
- 		for(let key in obj) {
- 			if(obj[key] == null) delete newQuery[key];
- 			newQuery[key] = obj[key];
- 		}
- 		
- 		let newString = [];
- 		for(let key in newQuery) newString.push(`${key}=${encodeURIComponent(newQuery[key])}`);
+	let newQuery = {};
+	let query = req.query;
+	for(let key in query) newQuery[key] = query[key];
+	for(let key in obj) {
+		if(obj[key] == null) delete newQuery[key];
+		newQuery[key] = obj[key];
+	}
+	
+	let newString = [];
+	for(let key in newQuery) newString.push(`${key}=${encodeURIComponent(newQuery[key])}`);
   	return newString.length == 0 ? '' : `?${newString.join('&')}`;
   };
 

@@ -22,10 +22,10 @@ router.post('/login', (req, res) => {
   
   if(!values.pw || values.pw.trim().length == 0)
     errors.push({field: 'pw', msg: '패스워드 입력해!!'});
-    
+
   if(errors.length > 0){
     delete values.pw;
-    res.render('user/login', {
+    return res.render('user/login', {
       forms: {
         login: {
            values: {uid: req.body.uid},
@@ -37,7 +37,7 @@ router.post('/login', (req, res) => {
   
   db.query('select * from users where uid like ? and password like ?', 
   [req.body.uid, req.body.pw], (err, rows) => {
-    if(err){ 
+    if(err){
         console.log(err);
     }
     if(!rows[0]){
@@ -50,7 +50,7 @@ router.post('/login', (req, res) => {
         }
       });
     }else{
-      console.log(rows);
+      //console.log(rows);
       req.session.user = rows[0];
       res.redirect('/');
     }
@@ -86,12 +86,11 @@ router.post('/join', (req, res) => {
   if(errors.length > 0){
     delete values.pw;
     delete values.pwConfirm;
-    res.render('user/join', {
+    return res.render('user/join', {
       forms: {
         join: { values, errors }
       }
     });
-    return;
   }
   
   db.query('insert into users (uid, password, name) values (?, ?, ?)', 
