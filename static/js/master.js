@@ -65,6 +65,22 @@
         text: '저장',
         click: e => {
           e.preventDefault();
+          $.ajax({
+            type: 'POST',
+            url: '/comment/update' + window.location.search,
+            data: {
+              id: id,
+              content: inputTag.value
+            },
+            success: function(result){
+              console.log(result);
+              contentTag.innerText = inputTag.value;
+              inputTag.replaceWith(contentTag);
+              saveBtn.replaceWith(buttons[0]);
+              cancelBtn.replaceWith(buttons[1]);
+            },
+            dataType: 'json'
+          });
         }
       })[0];
       let cancelBtn = $('<a>', {

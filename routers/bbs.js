@@ -315,11 +315,11 @@ router.post('/comment/delete', (req, res) => {
 router.post('/comment/update', (req, res) => {
   if(!req.session.user) return res.status(400).end();
   
-  let commentId = req.body.commentId;
+  let data = req.body;
 
-  db.query('DELETE FROM comments WHERE id=?', [commentId], (err, result) => {
+  db.query('UPDATE comments SET content=? where id=?', [data.content, data.id], (err, result) => {
     if(err) throw err;
-    res.redirect('/' + res.locals.buildQuery(req.query));
+    res.json({result: 'SUCCESS'});
   });
 
 });

@@ -16,7 +16,8 @@
       </div>
       <div class="body">
         <div class="content">
-          <%=article.content%>          
+          <%-article.content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')%>
+          <!-- 태그가 다 먹히는 문제해결 -->
         </div>
       </div>
       <div class="footer">
@@ -40,7 +41,7 @@
             <div class="com_user"><%=comment.username%></div>
             <div class="com_content"><%=comment.content%></div>
             <div class="com_date"><%=util.date(comment.createdAt)%></div>
-            <% if(user != null && (user.isAdmin == 1 || user.id == article.user_id) ) { %>
+            <% if(user != null && (user.isAdmin == 1 || user.id == comment.user_id) ) { %>
               <a href="#" id="com_update" onclick="bbs.Comment.update(<%=comment.id%>, this); return false;">수정</a>
               <a href="#" id="com_delele" onclick="bbs.Comment.delete(<%=comment.id%>); return false;">삭제</a>
             <% } %>
