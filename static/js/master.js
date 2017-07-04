@@ -36,9 +36,57 @@
       return true;
     }
   };
+
+  let Comment = {
+    delete: function(id){
+      if(!confirm('정말 삭제하시겠습니까?')) return;
+      let form = document.createElement('form');
+      form.action = '/comment/delete/' + window.location.search;
+      form.method = 'post';
+      let hidden = document.createElement('input');
+      hidden.type = 'hidden';
+      hidden.setAttribute('name', 'commentId');
+      hidden.setAttribute('value', id);
+      document.body.append(form);
+      form.append(hidden);
+      form.submit();
+    },
+    update: function(id, self){
+      let contentTag = $(`#comment_${id} .com_content`)[0];
+      let inputTag = $('<input>', {
+        type: 'text',
+        value: contentTag.innerText,
+      })[0];
+      contentTag.replaceWith(inputTag);
+
+      let buttons = $(`#comment_${id} a`);
+      let saveBtn = $('<a>', {
+        href: '#',
+        text: '저장',
+        click: e => {
+          e.preventDefault();
+        }
+      })[0];
+      let cancelBtn = $('<a>', {
+        href: '#',
+        text: '취소',
+        click: e => {
+          e.preventDefault();
+          inputTag.replaceWith(contentTag);
+          saveBtn.replaceWith(buttons[0]);
+          cancelBtn.replaceWith(buttons[1]);
+        }
+      })[0];
+
+      buttons[0].replaceWith(saveBtn);
+      buttons[1].replaceWith(cancelBtn);
+
+    }
+  }
   
   window.bbs = {
     User: User,
     Article: Article,
+    Comment: Comment
   };
 })(window);

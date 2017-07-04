@@ -31,8 +31,8 @@ module.exports = (req, res, next) => {
 	let query = req.query;
 	for(let key in query) newQuery[key] = query[key];
 	for(let key in obj) {
-		if(obj[key] == null) delete newQuery[key];
 		newQuery[key] = obj[key];
+		if(obj[key] == null) delete newQuery[key];
 	}
 	
 	let newString = [];

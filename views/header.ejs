@@ -13,7 +13,7 @@
             <a href="/?board=<%=b.name%>" class="<%= typeof board != 'undefined' && board.name==b.name && path=='/' ? 'active' : 'inactive'%>"><%=b.title%></a>
           <% }) %>
           <% if(user) { %>
-            <a href="/write">글쓰기</a>
+            <a href="/write" class="<%=path == '/write' ? 'active' : 'inactive'%>">글쓰기</a>
             <a href="#" onclick="bbs.User.logout(); return false;">로그아웃</a>
             <h2 class="username"><%=user.name%>님 안녕하세요?</h2>
           <% } else { %>

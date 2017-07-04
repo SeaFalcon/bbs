@@ -97,10 +97,14 @@ router.get('/', (req, res) => {
                 }
               }
               
-              res.render('board', {
-                articles: articles,
-                paging,
-                article: articleRows[0]
+              db.query(`select c.*, u.name username from comments c left join articles a on c.article_id=a.id
+                        left join users u on c.user_id=u.id where c.article_id=?`, [id], (err, comments) => {
+                res.render('board', {
+                  articles: articles,
+                  paging,
+                  article: articleRows[0],
+                  comments: comments
+                });
               });
             });
           } else {
@@ -277,7 +281,45 @@ router.post('/delete', (req, res) => {
 });
 
 
-// comment
+// comment insert
 router.post('/comment', (req, res) => {
+  if(!req.session.user) return res.status(400).end();
 
-})
+  let user = req.session.user;
+  let formData = req.body;
+
+  if(!formData.content) return res.status(400).end();
+
+  db.query(`INSERT INTO comments (content, user_id, article_id) VALUES (?, ?, ?)`,
+    [formData.content, user.id, formData.id], (err, result) => {
+      if(err) throw err;
+      res.redirect('/' + res.locals.buildQuery({board: formData.board, id: formData.id, search: formData.search}));
+    });
+
+});
+
+// comment delete
+router.post('/comment/delete', (req, res) => {
+  if(!req.session.user) return res.status(400).end();
+  
+  let commentId = req.body.commentId;
+
+  db.query('DELETE FROM comments WHERE id=?', [commentId], (err, result) => {
+    if(err) throw err;
+    res.redirect('/' + res.locals.buildQuery(req.query));
+  });
+
+});
+
+// comment update
+router.post('/comment/update', (req, res) => {
+  if(!req.session.user) return res.status(400).end();
+  
+  let commentId = req.body.commentId;
+
+  db.query('DELETE FROM comments WHERE id=?', [commentId], (err, result) => {
+    if(err) throw err;
+    res.redirect('/' + res.locals.buildQuery(req.query));
+  });
+
+});

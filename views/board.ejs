@@ -26,6 +26,29 @@
         <% } %>
       </div>
     </div>
+    <div class="comment">
+      <% if(user) { %>
+        <form method="post" action="/comment">
+          <%-buildHiddens({content: null})%>
+          <input type="text" name="content">
+          <input type="submit" value="댓글쓰기">
+        </form>
+      <% } %>
+      <div class="commentList">
+        <% comments.forEach(comment => { %>
+          <div id="comment_<%=comment.id%>">
+            <div class="com_user"><%=comment.username%></div>
+            <div class="com_content"><%=comment.content%></div>
+            <div class="com_date"><%=util.date(comment.createdAt)%></div>
+            <% if(user != null && (user.isAdmin == 1 || user.id == article.user_id) ) { %>
+              <a href="#" id="com_update" onclick="bbs.Comment.update(<%=comment.id%>, this); return false;">수정</a>
+              <a href="#" id="com_delele" onclick="bbs.Comment.delete(<%=comment.id%>); return false;">삭제</a>
+            <% } %>
+            <hr>
+          </div>
+        <% }) %>
+      </div>
+    </div>
   <% } %>
   <%  if (articles.length == 0) { %>
   <p>게시물이 없습니다.</p>
