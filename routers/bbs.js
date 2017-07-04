@@ -323,3 +323,89 @@ router.post('/comment/update', (req, res) => {
   });
 
 });
+
+// comments ajax...
+
+router.get('/comments', (req, res) => {
+  let articleId = req.query.articleId;
+  if(!articleId) return res.status(400).end();
+
+  db.query(`select c.*, u.name username from comments c join users u on c.user_id=u.id where c.article_id=?`,
+  [articleId], (err, comments) => {
+    if(err) throw err;
+    res.json(comments);
+  });
+});
+
+router.post('/comments', (req, res) => {
+  let articleId = req.query.articleId;
+  let content = req.body.content;
+  let user = req.session.user;
+  if(!user || !articleId || !content) return res.status(400).end();
+
+  db.query(`insert into comments(user_id, article_id, content) values (?, ?, ?)`, 
+  [user.id, articleId, content], (err, result) => {
+    if(err) throw err;
+    
+    db.query(`select c.*, u.name username from comments c join users u on c.user_id=u.id where c.id=?`,
+      [result.insertId], (err, rows) => {
+        if(err) throw err;
+
+        let comment = rows[0] || null;
+        res.json(comment);
+      });
+  });
+});
+
+router.delete('/comments/:id', (req, res) => {
+  let commentId = req.params.id;
+  let user = req.session.user;
+  if(!user) return res.status(401).end();
+
+  if(user.isAdmin){
+    db.query(`delete from comments where id=?`, [commentId], (err, result) => {
+      if(err) throw err;
+
+      if(result.affectedRows > 0) res.end();
+      else res.status(500).end();
+    });
+  } else {
+    db.query(`delete from comments where id=? and user_id = ?`, [commentId, user.id], (err, result) => {
+      if(err) throw err;
+
+      if(result.affectedRows > 0) res.end();
+      else res.status(500).end();
+    });
+  }
+});
+
+router.put('/comments/:id', (req, res) => {
+  let commentId = req.params.id;
+  let content = req.body.content;
+  let user = req.session.user;
+  if(!user || !content) return res.status(400).end();
+
+  if(user.isAdmin){
+    db.query(`update comments set content=? where id=?`, [content, commentId], (err, result) => {
+      if(err) throw err;
+      if(result.affectedRows < 1) return res.status(500).end();
+      db.query(`select * from comments where id=?`, [commentId], (err, rows) => {
+        if(err) throw err;
+        let comment = rows[0] || null;
+        res.json(comment);
+      });
+    });
+  } else {
+    db.query(`update comments set content=? where id=? and user_id=?`, [content, commentId, user.id], (err, result) => {
+      if(err) throw err;
+      console.log(result);
+      if(result.affectedRows < 1) return res.status(500).end();
+      db.query(`select * from comments where id=?`, [commentId], (err, rows) => {
+        if(err) throw err;
+        let comment = rows[0] || null;
+        res.json(comment);
+      });
+    });    
+  }
+
+});

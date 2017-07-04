@@ -1,4 +1,4 @@
-(function(window){
+(function(window, $){
   let User = {
     logout: function(){
       var form = document.createElement('form');
@@ -99,10 +99,39 @@
 
     }
   }
-  
+
+  const Comment = function(id, user_id, content, article_id){
+    this.id = id;
+    this.user_id = id;
+    this.content = content;
+    this.article_id = article_id;
+    Comment.instances.push(this);
+  };
+  Comment.instaces = [];
+  Comment.get = function(articleId){
+    $.get('/comments?articleId=' + articleId)
+    .then(function(comments){
+      Comment.instances = comments;
+      Comment.render();
+    })
+    .catch(function(){
+      //TODO
+    });
+  };
+  Comment.create = function(articleId, content){
+    $.post('/comments?articleId=' + articleId, {content: content})
+    .then(function(data){
+      Comment.instances.push(new Comment(data.id, data.user_id, data.content, article_id));
+    })
+    .catch(function(){
+      //TODO
+    });
+  };
+
+
   window.bbs = {
     User: User,
     Article: Article,
     Comment: Comment
   };
-})(window);
+})(window, $);

@@ -27,7 +27,7 @@
         <% } %>
       </div>
     </div>
-    <div class="comment">
+    <!-- <div class="comment">
       <% if(user) { %>
         <form method="post" action="/comment">
           <%-buildHiddens({content: null})%>
@@ -48,6 +48,28 @@
             <hr>
           </div>
         <% }) %>
+      </div>
+    </div> -->
+    <!-- ajax Comment -->
+    <div class="comment">
+      <% if(user) { %>
+        <form method="post" action="/comment">
+          <%-buildHiddens({content: null})%>
+          <input type="text" name="content">
+          <input type="submit" value="댓글쓰기">
+        </form>
+      <% } %>
+      <div class="commentList">
+          <div id="comment">
+            <div class="com_user"></div>
+            <div class="com_content"></div>
+            <div class="com_date"></div>
+            <% if(user != null && (user.isAdmin == 1 || user.id == comment.user_id) ) { %>
+              <a href="#" id="com_update" onclick="bbs.Comment.update(<%=comment.id%>, this); return false;">수정</a>
+              <a href="#" id="com_delele" onclick="bbs.Comment.delete(<%=comment.id%>); return false;">삭제</a>
+            <% } %>
+            <hr>
+          </div>
       </div>
     </div>
   <% } %>
