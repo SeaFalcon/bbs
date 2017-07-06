@@ -61,13 +61,13 @@
       <% } %>
       <div class="commentList">
           <div id="comment">
-            <div class="com_user"></div>
-            <div class="com_content"></div>
-            <div class="com_date"></div>
-            <% if(user != null && (user.isAdmin == 1 || user.id == comment.user_id) ) { %>
-              <a href="#" id="com_update" onclick="bbs.Comment.update(<%=comment.id%>, this); return false;">수정</a>
-              <a href="#" id="com_delele" onclick="bbs.Comment.delete(<%=comment.id%>); return false;">삭제</a>
-            <% } %>
+            <div class="com_user" data-app="author"></div>
+            <div class="com_content" data-app="content"></div>
+            <div class="com_date" data-app="date"></div>
+            
+              <a href="#" id="com_update" onclick="bbs.Comment.update(this); return false;">수정</a>
+              <a href="#" id="com_delele" onclick="bbs.Comment.delete(); return false;">삭제</a>
+            
             <hr>
           </div>
       </div>

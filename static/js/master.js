@@ -1,5 +1,5 @@
 (function(window, $){
-  let User = {
+  var User = {
     logout: function(){
       var form = document.createElement('form');
       form.action = '/user/logout';
@@ -11,7 +11,7 @@
       
     }
   };
-  let Article = {
+  var Article = {
     delete: function(){
       if(!confirm('정말 삭제하시겠습니까?')) return;
       var form = document.createElement('form');
@@ -37,7 +37,7 @@
     }
   };
 
-  let Comment = {
+  /*let Comment = {
     delete: function(id){
       if(!confirm('정말 삭제하시겠습니까?')) return;
       let form = document.createElement('form');
@@ -98,9 +98,9 @@
       buttons[1].replaceWith(cancelBtn);
 
     }
-  }
+  }*/
 
-  const Comment = function(id, user_id, content, article_id){
+  var Comment = function(id, user_id, content, article_id){
     this.id = id;
     this.user_id = id;
     this.content = content;
@@ -108,6 +108,8 @@
     Comment.instances.push(this);
   };
   Comment.instaces = [];
+
+  // Static Method
   Comment.get = function(articleId){
     $.get('/comments?articleId=' + articleId)
     .then(function(comments){
@@ -121,13 +123,47 @@
   Comment.create = function(articleId, content){
     $.post('/comments?articleId=' + articleId, {content: content})
     .then(function(data){
-      Comment.instances.push(new Comment(data.id, data.user_id, data.content, article_id));
+      new Comment(data.id, data.user_id, data.content, data.article_id);
+      Comment.render();
     })
     .catch(function(){
       //TODO
     });
   };
 
+  // Instance Method
+  Comment.prototype.delete = function(commentId){
+    $.ajax('/comments/'+commentId, { method: 'delete' })
+    .then(function(result){
+      console.log(result);
+      Comment.instances.splice(Comment.instances.indexOf(commentId), 1);
+      Comment.render();
+    })
+    .catch(function(){
+
+    });
+  };
+
+  Comment.prototype.update = function(commentId, content){
+    $.ajax('/comments/'+commentId, { method: 'put', data: {content: content} })
+    .then(function(result){
+      console.log(result);
+      var idx = Comment.instances.indexOf(commentId);
+      Comment.instances[idx].content = content;
+      Comment.render();
+    })
+    .catch(function(){
+
+    });
+  };
+
+  var $view = {};
+
+  $("[data-app]").each(_, function(el){
+    var $el = $(el);
+    var viewName = $el.data('app');
+    $view[viewName] = $el;
+  });
 
   window.bbs = {
     User: User,
