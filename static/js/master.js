@@ -100,12 +100,12 @@
     }
   }*/
 
-  var Comment = function(id, user_id, content, article_id){
-    this.id = id;
-    this.user_id = id;
-    this.content = content;
-    this.article_id = article_id;
-    Comment.instances.push(this);
+  var Comment = function(data){
+    this.id = data.id;
+    this.content = data.content;
+    this.author = data.author;
+    this.editable = data.editable;
+    this.createdAt = data.createdAt;
   };
   Comment.instaces = [];
 
@@ -132,11 +132,13 @@
   };
 
   // Instance Method
-  Comment.prototype.delete = function(commentId){
-    $.ajax('/comments/'+commentId, { method: 'delete' })
+  Comment.prototype.delete = function(){
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+
+    $.ajax('/comments/'+thid.id, { method: 'delete' })
     .then(function(result){
       console.log(result);
-      Comment.instances.splice(Comment.instances.indexOf(commentId), 1);
+      Comment.instances.splice(Comment.instances.indexOf(this), 1);
       Comment.render();
     })
     .catch(function(){
@@ -157,12 +159,37 @@
     });
   };
 
+  Comment.render = function(){
+
+  };
+
   var $view = {};
 
   $("[data-app]").each(_, function(el){
     var $el = $(el);
     var viewName = $el.data('app');
     $view[viewName] = $el;
+  });
+
+  var state = {
+    item: Comment.instances
+  };
+
+  var handlers = {
+    var comments = state.item;
+    'update-view': function(e){
+      if(comments){
+        $views['author']
+        $views['content']
+        $views['date']
+      }
+    }
+  }
+
+  // register handlers
+  Object.keys(handlers).forEach(name => {
+    let eventName = 'app-' + name;
+    $(window).on(eventName, handlers[name]);
   });
 
   window.bbs = {
